@@ -1,6 +1,6 @@
 const data = {
   authors: [
-    { id: "1", name: "Gideon Odiokine", bookIds: ["101", "102"] },
+    { id: "1", name: "Chirag Goel", bookIds: ["101", "102"] },
     { id: "2", name: "Akshay Saini", bookIds: ["103"] },
   ],
   books: [
@@ -18,6 +18,7 @@ const data = {
 export const resolvers = {
   Book: {
     author: (parent, args, context, info) => {
+      console.log(parent);
       return data.authors.find(
         (authorDetail) => authorDetail.id === parent.authorId
       );
@@ -25,17 +26,30 @@ export const resolvers = {
   },
   Author: {
     books: (parent, args, context, info) => {
-      return data.books.filter((bookInfo) =>
-        parent.bookIds.includes(bookInfo.id)
-      );
+      return data.books.filter((book) => parent.bookIds.includes(book.id));
     },
   },
   Query: {
-    authors: () => {
+    authors: (parent, args, context, info) => {
       return data.authors;
     },
-    books: () => {
+    books: (parent, args, context, info) => {
       return data.books;
+    },
+  },
+  Mutation: {
+    addBook: (parent, { title, publishedYear, authorId }, context, info) => {
+      const newId = (data.books.length + 101).toString();
+      const newBook = { id: newId, title, publishedYear, authorId };
+
+      data.books.push(newBook);
+
+      const author = data.authors.find((author) => author.id === authorId);
+      if (author) {
+        author.bookIds.push(newId);
+      }
+
+      return newBook;
     },
   },
 };
