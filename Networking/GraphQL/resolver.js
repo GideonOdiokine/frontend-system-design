@@ -18,7 +18,6 @@ const data = {
 export const resolvers = {
   Book: {
     author: (parent, args, context, info) => {
-      console.log(parent);
       return data.authors.find(
         (authorDetail) => authorDetail.id === parent.authorId
       );
